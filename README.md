@@ -1,7 +1,7 @@
 # twitch_irc_bot
 This is a repo for an IRC bot for twitch.tv, please download as you see fit --- By:lemon65
-Community-Website -- http://home.ramcommunity.com/
-Download with -->   git clone https://github.com/lemon65/twitch_irc_bot
+- Community-Website -- http://home.ramcommunity.com/
+- Download with -->   git clone https://github.com/lemon65/twitch_irc_bot
 
 Commands -> 
 
@@ -12,5 +12,5 @@ Commands ->
 * '!help' -- displays the github readme file
 
 
-* credit To -- > 
+Credit To -- > 
   * Lemon65 and my father -- > "know alot about a little and a little about a lot" -- David (2013)
