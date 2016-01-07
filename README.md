@@ -1,9 +1,19 @@
 # twitch_irc_bot
 This is a repo for an IRC bot for twitch.tv, please download as you see fit --- By:lemon65
-- Community-Website -- http://home.ramcommunity.com/
+- Community-Website --> http://home.ramcommunity.com/
 - Download with -->   git clone https://github.com/lemon65/twitch_irc_bot
 
-Commands -> 
+Dependencies ->
+'''
+sudo pip install configparser  
+'''
+
+Setup ->
+'''
+You will need to edit the "user_config.ini" with you bot connection information and if needed all the channels that it should join. the Channels are not something that you have to config but you can setup the script to join and track X number of channels. 
+'''
+
+User Commands -> 
 
 * '!xp' -- shows the users current XP
 * '!robot' -- pulls data from a local file and sends that to the chat (Jokes / Funny)
@@ -11,6 +21,11 @@ Commands ->
 * '!battle <target>' -- gathers a random pokemon attack and formats it as <user> attacks <target> with <attack>
 * '!help' -- displays the github readme file
 
+USER-Command Spam Control -> 
+* Bot has a built in timeout, so each user can only send one command per 60 seconds
+
+Admin Commands ->
+* '!toggle' -- Turns off all commands for the channel, note the XP counter is still running.
 
 Credit To -- > 
   * Lemon65 and my father -- > "know alot about a little and a little about a lot" -- David (2013)
