@@ -1,5 +1,4 @@
-# twitch_irc_bot
-##Repo for Bot_Lemon - Twitch.tv IRC Bot
+#Repository for Lemon Bot - Twitch.tv IRC Bot
 ###please download as you see fit and if possible credit --> lemon65
 - Twitch - http://www.twitch.tv/lemon65
 - Community-Website --> http://home.ramcommunity.com/
