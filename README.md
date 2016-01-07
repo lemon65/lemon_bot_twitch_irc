@@ -1,5 +1,5 @@
 # twitch_irc_bot
-##This is a repo for an IRC bot for twitch.tv
+##Repo for Bot_Lemon - Twitch.tv IRC Bot
 ###please download as you see fit and if possible credit --> lemon65
 - Twitch - http://www.twitch.tv/lemon65
 - Community-Website --> http://home.ramcommunity.com/
@@ -11,7 +11,7 @@ sudo pip install configparser
 ```
 
 ###**Setup ->**
-* You will need to edit the "user_config.ini" with you bot connection information and if needed all the channels that it should join. the Channels are not something that you have to config but you can setup the script to join and track X number of channels. 
+* You will need to edit the "user_config.ini" with you bot connection information and if you would like all the channels it should join.
 ```
 [twitch_bot_configs]
 
@@ -24,6 +24,13 @@ PASS = <BOT_AUTH_CODE>
 
 CHANNEL1 = <CHANNEL1>
 CHANNEL2 = <CHANNEL2>
+```
+
+###**Running the BOT ->**
+```
+Single Channle JOIN -- >   python twitch_irc_bot.py <TARGET_CHANNEL>
+Multi Channle JOIN --> python multi_channel_wrapper.py
+    (This gets Channel names from the "user_config.ini")
 ```
 
 ###**User Commands ->**
