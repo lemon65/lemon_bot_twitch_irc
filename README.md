@@ -27,8 +27,8 @@ CHANNEL2 = <CHANNEL2>
 
 ###**Running the BOT ->**
 ```
-Single Channle JOIN -- >   python twitch_irc_bot.py <TARGET_CHANNEL>
-Multi Channle JOIN --> python multi_channel_wrapper.py
+Single Channel JOIN -- >   python twitch_irc_bot.py <TARGET_CHANNEL>
+Multi Channel JOIN --> python multi_channel_wrapper.py
     (This gets Channel names from the "user_config.ini")
 ```
 
