@@ -28,8 +28,12 @@ def save_obj(dict, file_path):
 
 # Load the pickle Object
 def load_obj(file_path):
-    with open(file_path, 'rb') as f:
-        return pickle.load(f)
+    file_bool = os.path.isfile(file_path)
+    if file_bool:
+        with open(file_path, 'rb') as f:
+            return pickle.load(f)
+    else:
+        return None
 
 # function appends data to the file
 def add_xp(user_list):
