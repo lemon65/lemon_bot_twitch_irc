@@ -15,10 +15,18 @@ sudo pip install configparser
 ```
 [twitch_bot_configs]
 
+# IRC Server Address
 HOST = irc.twitch.tv
+# IRC Server Port
 PORT = 6667
-NICK = <BOT_NAME>
-PASS = <BOT_AUTH_CODE>
+# Bot NickName
+NICK = BOTNAME
+# Twitch.tv auth code -- https://twitchapps.com/tmi/
+PASS = AUTHCODE
+# Seconds between user commands -- NEEDS TO BE AN INT -- > 30,60,90
+SPAM = 30
+# Cost in xp for a raffle ticket
+RAFFLE_COST = 1000
 
 [channels_to_join]
 
