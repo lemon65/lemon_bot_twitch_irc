@@ -225,6 +225,7 @@ def enter_the_raffle(user):
         if raffle_dict[user] >= 1:
             CURRENT_RAFFLE.append(user)
             raffle_dict[user] = raffle_dict[user] - 1
+            bot_xp.save_obj(raffle_dict, RAFFLE_FILE)
         else:
             message('%s has no raffle tickets' % user)
             return
@@ -241,8 +242,11 @@ def clear_raffle():
 
 # draw a user from the pool
 def draw():
-    rand_target = random.randint(0, len(CURRENT_RAFFLE))
-    message('%s Has won the Raffle!' % CURRENT_RAFFLE[rand_target])
+    if len(CURRENT_RAFFLE) > 1:
+        rand_target = random.randint(0, len(CURRENT_RAFFLE))
+        message('%s Has won the Raffle!' % CURRENT_RAFFLE[rand_target])
+    else:
+        message('We need to wait for more people!')
     return
 
 # Function to display Tickets
