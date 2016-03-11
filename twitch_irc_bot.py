@@ -25,7 +25,7 @@ config.read('./user_config.ini')
 HOST = str(config['twitch_bot_configs']['HOST'])
 PORT = int(config['twitch_bot_configs']['PORT'])
 NICK = str(config['twitch_bot_configs']['NICK'])
-SPAM = str(config['twitch_bot_configs']['SPAM'])
+RAF_COST = str(config['twitch_bot_configs']['RAFFLE_COST'])
 PASS = auth_code
 
 # --------------------------------------------- Global Bools ----------------------------------------------------
@@ -87,6 +87,7 @@ def get_mods():
             continue
         if mods:
             time.sleep(1)
+            print 'Setting bool to False'
             loop_bool = False
     print('Mods Found from API - %s' % mods)
     return mods
@@ -246,17 +247,17 @@ def buy_ticket(user):
     try:
         if not raffle_dict:
             raffle_dict = {}
-        if xp_dict[user] >= 1000:
-            xp_dict[user] = xp_dict[user] - 1000
+        if xp_dict[user] >= RAF_COST:
+            xp_dict[user] = xp_dict[user] - RAF_COST
             if user in raffle_dict.keys():
                 raffle_dict[user] = raffle_dict[user] + 1
             else:
                 raffle_dict[user] = 1
-            message('Thats 1000xp, enjoy your raffle ticket![Current Count: %s]' % raffle_dict[user])
+            message('Thats %sxp, enjoy your raffle ticket![Current Count: %s]' % (RAF_COST, raffle_dict[user]))
             bot_xp.save_obj(xp_dict, XP_FILE)
             bot_xp.save_obj(raffle_dict, RAFFLE_FILE)
         else:
-            message('Raffle Tickets cost 1000xp, you only have %s' % xp_dict[user])
+            message('Raffle Tickets cost %sxp, you only have %s' % (RAF_COST, xp_dict[user]))
     except Exception:
         pass
     return
