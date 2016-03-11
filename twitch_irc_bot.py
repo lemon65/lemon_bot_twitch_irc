@@ -146,7 +146,8 @@ def command_robot():
     with open(robot_data, 'rb') as f:
         data = f.read().split('\n')
         del data[-1]
-    formatted_data = data[random.randint(0, len(data))]
+    location = random.randint(0, len(data) - 1)
+    formatted_data = data[location]
     message(str(formatted_data))
     return
 
