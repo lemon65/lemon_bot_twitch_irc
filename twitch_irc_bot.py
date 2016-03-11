@@ -12,6 +12,13 @@ import bot_xp
 import requests
 import configparser
 import subprocess as sp
+from oauth_bot_lemon import Auth
+
+# -- TODO - Top five Xp holders
+
+get_auth = Auth()
+auth_code = get_auth.send_auth()
+
 # --------------------------------------------- Read Config Files -----------------------------------------------
 config = configparser.ConfigParser()
 config.read('./user_config.ini')
@@ -19,8 +26,7 @@ HOST = str(config['twitch_bot_configs']['HOST'])
 PORT = int(config['twitch_bot_configs']['PORT'])
 NICK = str(config['twitch_bot_configs']['NICK'])
 SPAM = str(config['twitch_bot_configs']['SPAM'])
-PASS = str(config['twitch_bot_configs']['PASS'])
-RAFFLE_COST = str(config['twitch_bot_configs']['RAFFLE_COST'])
+PASS = auth_code
 
 # --------------------------------------------- Global Bools ----------------------------------------------------
 try:
@@ -69,45 +75,22 @@ def get_user_name(line_data):
 
 # Get mods for the Channel
 def get_mods():
-    try:
-        channel = CHAN.strip('#')
-        data = requests.get('https://tmi.twitch.tv/group/user/%s/chatters' % channel).json()
-        mods = data['chatters']['moderators']
-    except Exception:
-        mods = []
-        return mods
+    loop_bool = True
+    while loop_bool:
+        try:
+            channel = CHAN.strip('#')
+            data = requests.get('https://tmi.twitch.tv/group/user/%s/chatters' % channel).json()
+            mods = data['chatters']['moderators']
+        except Exception:
+            print 'Got an API Error, setting mods list to empty'
+            mods = []
+            continue
+        if mods:
+            time.sleep(1)
+            loop_bool = False
+    print('Mods Found from API - %s' % mods)
     return mods
 
-# Function find the Delta in two Epoc Times 
-def epoch_delta(then, now):
-    spam_bool = False
-    delta = now - then
-    if delta >= int(SPAM):
-        return spam_bool
-    else:
-        spam_bool = True
-        return spam_bool
-
-# Check the recent User commands for Time Deltas 
-def user_spam_test(user, now):
-    global RECENT_USERS
-    user_spam = False
-    if user in RECENT_USERS.keys():
-        then = RECENT_USERS.get(user)
-        user_spam = epoch_delta(then, now)
-        if user_spam:
-            return user_spam
-        else:
-            del RECENT_USERS[user]
-            RECENT_USERS[user] = now
-    else:
-        RECENT_USERS[user] = now
-    return user_spam
-
-# Sends a message to chat saying that the command system is offline
-def run_toggle_command():
-    message('Commands System Offline: have a moderator run the !toggle command')
-    return
 
 # Take the chat line data and call the correct command or function
 def dispatcher(line_data):
@@ -115,39 +98,36 @@ def dispatcher(line_data):
     user = get_user_name(line_data)
     line_data = line_data.lower()
     message = norm_data(line_data.split(':')[-1],'', '')
-    now = int(time.time())
-    user_spam = user_spam_test(user, now)
-    if not user_spam:
-        if not TOGGLE_BOOL:
-            run_toggle_command()
-        if message == '!raffle' and TOGGLE_BOOL:
-            buy_ticket(user)
-        if message == '!display' and TOGGLE_BOOL:
-            display_tickets(user)
-        if message == '!enter' and TOGGLE_BOOL:
-            enter_the_raffle(user)
-        if message == '!xp' and TOGGLE_BOOL:
-            command_get_user_xp(user)
-        if message == '!robot' and TOGGLE_BOOL:
-            command_robot()
-        if '!yomama' in message and TOGGLE_BOOL:
-            target_patteren = '^!yomama (\w+)'
-            target = re.search(target_patteren, message)
-            if target:
-                yo_mama_so_fat(target.group(1))
-        if '!battle' in message and TOGGLE_BOOL:
-            target_patteren = '^!battle (\w+)'
-            target = re.search(target_patteren, message)
-            if target:
-                pokemon_battle(user, target.group(1))
-        if message == '!help' and TOGGLE_BOOL:
-            display_help()
+    if message == '!help' and TOGGLE_BOOL:
+        display_help()
+    if message == '!raffle' and TOGGLE_BOOL:
+        buy_ticket(user)
+    if message == '!display' and TOGGLE_BOOL:
+        display_tickets(user)
+    if message == '!enter' and TOGGLE_BOOL:
+        enter_the_raffle(user)
+    if message == '!xp' and TOGGLE_BOOL:
+        command_get_user_xp(user)
+    if message == '!robot' and TOGGLE_BOOL:
+        command_robot()
+    if '!yomama' in message and TOGGLE_BOOL:
+        target_patteren = '^!yomama (\w+)'
+        target = re.search(target_patteren, message)
+        if target:
+            yo_mama_so_fat(target.group(1))
+    if '!battle' in message and TOGGLE_BOOL:
+        target_patteren = '^!battle (\w+)'
+        target = re.search(target_patteren, message)
+        if target:
+            pokemon_battle(user, target.group(1))
     if message == '!toggle':
         mods_list = get_mods()
         if user in mods_list:
             if TOGGLE_BOOL:
+                print 'system offline, set by %s' % user
                 TOGGLE_BOOL = False
             else:
+                print 'system online, set by %s' % user
                 TOGGLE_BOOL = True
     if message == '!draw':
         mods_list = get_mods()
@@ -225,6 +205,7 @@ def enter_the_raffle(user):
         if raffle_dict[user] >= 1:
             CURRENT_RAFFLE.append(user)
             raffle_dict[user] = raffle_dict[user] - 1
+            message('%s has joined the Raffle!' % user)
             bot_xp.save_obj(raffle_dict, RAFFLE_FILE)
         else:
             message('%s has no raffle tickets' % user)
@@ -265,17 +246,17 @@ def buy_ticket(user):
     try:
         if not raffle_dict:
             raffle_dict = {}
-        if xp_dict[user] >= int(RAFFLE_COST):
-            xp_dict[user] = xp_dict[user] - int(RAFFLE_COST)
+        if xp_dict[user] >= 1000:
+            xp_dict[user] = xp_dict[user] - 1000
             if user in raffle_dict.keys():
                 raffle_dict[user] = raffle_dict[user] + 1
             else:
                 raffle_dict[user] = 1
-            message('Thats %sxp, enjoy your raffle ticket![Current Count: %s]' % (RAFFLE_COST, raffle_dict[user]))
+            message('Thats 1000xp, enjoy your raffle ticket![Current Count: %s]' % raffle_dict[user])
             bot_xp.save_obj(xp_dict, XP_FILE)
             bot_xp.save_obj(raffle_dict, RAFFLE_FILE)
         else:
-            message('Raffle Tickets cost %sxp, you only have %s' % (RAFFLE_COST, xp_dict[user]))
+            message('Raffle Tickets cost 1000xp, you only have %s' % xp_dict[user])
     except Exception:
         pass
     return
